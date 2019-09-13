@@ -8,7 +8,7 @@ class main:
 
     def __init__(self, pathDocs, pathStopwords):
         self.reader = HTMLReader(pathDocs, pathStopwords)
-        self.db = Database()
+        self.db = Documents()
         self.invertedIndex = InvertedIndex(self.db)
         self.createInvertedIndex()
         self.calculateTfidf()
@@ -18,10 +18,16 @@ class main:
         self.analiseQuery(search_term)    
 
     def highlight_term(self, id, term, text, similarity):
+        """
+        Highlight a specific term of a sentence
+        """
         replaced_text = text.replace(term, "\033[1;32;40m {term} \033[0;0m".format(term=term))
         return "--- document {id}: {replaced} -- similarity: {sim}".format(id=id, replaced=replaced_text, sim=similarity)
 
     def createInvertedIndex(self):
+        """
+        Creates the inverted index dict
+        """
         for doc in self.reader.docs:
             self.invertedIndex.index_document(doc)
 
@@ -31,6 +37,9 @@ class main:
         print("##############################################") 
 
     def calculateTfidf(self):
+        """
+        Calculates the Tfidf of the terms related to the docs
+        """
         self.invertedIndex.calc_tfidf()
         print("##############################################") 
         print("Tfidf")
@@ -38,6 +47,9 @@ class main:
         print("##############################################") 
 
     def analiseQuery(self, search_term):
+        """
+        Analise the queryin relation to the docs. Shows the docs with each word of the querys and the most similar docs with the input
+        """
         similarity = self.invertedIndex.calc_similarity(search_term)
 
         result = self.invertedIndex.lookup_query(search_term)
@@ -63,4 +75,5 @@ class main:
             for j in range(0, len(similarity)):
                 if ranking[i] == similarity[j] and ranking[i] > 0:
                     print("Most similar: Doc("+str(j)+"), Similarity: "+str(ranking[i]))
+                    
 m = main(sys.argv[1], sys.argv[2])

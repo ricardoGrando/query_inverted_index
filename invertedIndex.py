@@ -21,7 +21,7 @@ class Appearance:
         """
         return str(self.__dict__)
 
-class Database:
+class Documents:
     """
     In memory database representing the already indexed documents.
     """
@@ -29,7 +29,7 @@ class Database:
         self.db = dict()
     def __repr__(self):
         """
-        String representation of the Database object
+        String representation of the Documents object
         """
         return str(self.__dict__)
     
@@ -56,7 +56,7 @@ class InvertedIndex:
         self.db = db
     def __repr__(self):
         """
-        String representation of the Database object
+        String representation of the Documents object
         """
         return str(self.index)
         
@@ -83,7 +83,10 @@ class InvertedIndex:
         self.db.add(document)
         return document
 
-    def getList(self, dict):       
+    def getList(self, dict):    
+        """
+        Returns the dict as a list
+        """   
         return list(dict.keys())
     
     def lookup_query(self, query):
@@ -95,6 +98,9 @@ class InvertedIndex:
         return { term: self.index[term] for term in query.split(' ') if term in self.index }
 
     def get_highest_frequency(self, docId, termsList):
+        """
+        Returns the max frequency of all terms in a docid document
+        """
         max_freq = 0
         for term in termsList:
             for key in self.index[term]:
@@ -103,6 +109,9 @@ class InvertedIndex:
         return max_freq
 
     def calc_tfidf(self):
+        """
+        Calculate the tfidf of all keys of each term in the appearance dictionary
+        """
         # List of all terms sorted
         self.termsList = sorted(self.getList(self.index))
 
@@ -112,6 +121,9 @@ class InvertedIndex:
                 key.tfidf = (float(key.frequency)/self.get_highest_frequency(int(key.docId), self.termsList))*key.idf
 
     def calc_D(self):
+        """
+        Calculate the D of all keys of each term in the appearance dictionary of each document
+        """        
         D = [0.0]*int(len(self.db.db))
 
         for docId in range (0, int(len(self.db.db))):
@@ -125,6 +137,9 @@ class InvertedIndex:
         return D
 
     def calc_freq_query(self, wordsQuery):
+        """
+        Calculate the D of all keys of each term in the appearance dictionary of each document
+        """
         fq = [0]*int(len(self.termsList))       
         
         for i in range(0, len(self.termsList)):
@@ -135,6 +150,9 @@ class InvertedIndex:
         return fq
 
     def calc_q_2(self, fq):
+        """
+        Calculate the Q^2 list of the query related to each term
+        """
         Q_2 = [0.0]*int(len(self.termsList))
 
         for i in range(0, len(self.termsList)):
@@ -144,6 +162,9 @@ class InvertedIndex:
         return Q_2
 
     def calc_tfidf_q(self, Q_2):
+        """
+        Calculate the tfidf*Q list related to each document
+        """
         tfidf_Q = [0.0]*int(len(self.db.db))
 
         for i in range(0, len(self.db.db)):            
@@ -155,7 +176,9 @@ class InvertedIndex:
         return tfidf_Q
 
     def calc_similarity(self, search_tearm):
-        
+        """
+        Calculate the similarity of the query with every document
+        """
         D = self.calc_D()
 
         fq = self.calc_freq_query(search_tearm.split(" "))        
@@ -171,4 +194,3 @@ class InvertedIndex:
                 sim_q[i] = tfidf_Q[i]/(math.sqrt(sum(Q_2))*D[i])
 
         return sim_q
-        # for term in termsList:

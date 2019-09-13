@@ -16,6 +16,9 @@ class HTMLReader:
         self.readDocs()
 
     def readDocs(self):
+        """
+        Read all documents of the path and set them in the Docs list
+        """
         DataPathList = glob.glob(self.pathDocs+'*.html')
         DataPathList.sort()
 
@@ -26,9 +29,6 @@ class HTMLReader:
             f = codecs.open(docPath, 'r')
             text = get_text(f.read())
     
-            # print(text_raw)
-            # text = text_raw.split("\n")[3]
-
             self.docs.append({
                 'id': str(h),
                 'text': self.removePonctuation(text.split(" "))
@@ -37,6 +37,9 @@ class HTMLReader:
             h += 1
 
     def removePonctuation(self, doc):  
+        """
+        Remove pontuation and set lower case in the text. Also removes the stopwords of the text
+        """
         i = 0
         while( i < len(doc)):
             doc[i] = doc[i].translate(str.maketrans('', '', '.!,?*%0123456789/;><~^'))
@@ -49,6 +52,9 @@ class HTMLReader:
         return ' '.join(doc)
    
     def readStopwords(self):
+        """
+        Read the stopwords configuration file
+        """
         fp = open(self.pathStopwords, "r")        
         first_line = fp.readline()
 
