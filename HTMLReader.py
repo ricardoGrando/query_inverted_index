@@ -4,6 +4,7 @@ import glob
 import os
 import codecs
 import string
+import re
 
 import requests
 from inscriptis import get_text
@@ -28,11 +29,14 @@ class HTMLReader:
         for docPath in DataPathList:
             f = codecs.open(docPath, 'r')
             text = get_text(f.read())
-    
+
             self.docs.append({
                 'id': str(h),
-                'text': self.removePonctuation(text.split(" "))
+                'text': self.removePonctuation(re.split('\s|\n',text))
             })
+
+            print(re.split('\s|\n',text))
+            # print(re.split('\s|, |\*|\n',text))
 
             h += 1
 
@@ -42,13 +46,16 @@ class HTMLReader:
         """
         i = 0
         while( i < len(doc)):
-            doc[i] = doc[i].translate(str.maketrans('', '', '.!,?*%0123456789/;><~^'))
+            doc[i] = doc[i].translate(str.maketrans('.!,?*%0123456789/:°\|]}º[ª{=+-_)(&¨$#@);"><~^\n', '                                              '))
+            doc[i] = doc[i].replace(' ','')
+
             doc[i] = doc[i].lower()
             if (doc[i] in self.stopwords):
-                doc.pop(i)
+                # doc.pop(i)
+                doc.remove(doc[i])
             else:
                 i += 1
-        
+
         return ' '.join(doc)
    
     def readStopwords(self):

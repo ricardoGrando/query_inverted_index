@@ -17,13 +17,6 @@ class main:
         
         self.analiseQuery(search_term)    
 
-    def highlight_term(self, id, term, text, similarity):
-        """
-        Highlight a specific term of a sentence
-        """
-        replaced_text = text.replace(term, "\033[1;32;40m {term} \033[0;0m".format(term=term))
-        return "--- document {id}: {replaced} -- similarity: {sim}".format(id=id, replaced=replaced_text, sim=similarity)
-
     def createInvertedIndex(self):
         """
         Creates the inverted index dict
@@ -45,7 +38,7 @@ class main:
         print("Tfidf")
         print(self.invertedIndex)
         print("##############################################") 
-
+        
     def analiseQuery(self, search_term):
         """
         Analise the queryin relation to the docs. Shows the docs with each word of the querys and the most similar docs with the input
@@ -58,14 +51,7 @@ class main:
         print(similarity)
         print("##############################################")
 
-        if (sum(similarity) > 0):
-            for term in result.keys():
-                for appearance in result[term]:
-                    # Belgium: { docId: 1, frequency: 1}
-                    document = self.db.get(appearance.docId)
-                    print(self.highlight_term(appearance.docId, term, document['text'], similarity[int(appearance.docId)]))
-                print("-----------------------------")
-        else:
+        if (sum(similarity) == 0):
             print("Term not found in the documents! ")
 
         ranking = similarity.copy()
@@ -75,5 +61,5 @@ class main:
             for j in range(0, len(similarity)):
                 if ranking[i] == similarity[j] and ranking[i] > 0:
                     print("Most similar: Doc("+str(j)+"), Similarity: "+str(ranking[i]))
-                    
+            
 m = main(sys.argv[1], sys.argv[2])

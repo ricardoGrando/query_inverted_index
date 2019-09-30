@@ -1,51 +1,8 @@
-# https://medium.com/@fro_g/writing-a-simple-inverted-index-in-python-3c8bcb52169a
-
 import math
+from Appearance import *
+from Documents import *
 
 ALFA = 0.5
-
-class Appearance:
-    """
-    Represents the appearance of a term in a given document, along with the
-    frequency of appearances in the same one.
-    """
-    def __init__(self, docId, frequency):
-        self.docId = docId
-        self.frequency = frequency
-        self.tfidf = 0.0
-        self.idf = 0.0
-        
-    def __repr__(self):
-        """
-        String representation of the Appearance object
-        """
-        return str(self.__dict__)
-
-class Documents:
-    """
-    In memory database representing the already indexed documents.
-    """
-    def __init__(self):
-        self.db = dict()
-    def __repr__(self):
-        """
-        String representation of the Documents object
-        """
-        return str(self.__dict__)
-    
-    def get(self, id):
-        return self.db.get(id, None)
-    
-    def add(self, document):
-        """
-        Adds a document to the DB.
-        """
-        return self.db.update({document['id']: document})
-    def remove(self, document):
-        """
-        Removes document from DB.
-        """
-        return self.db.pop(document['id'], None)
 
 class InvertedIndex:
     """
