@@ -46,7 +46,7 @@ class HTMLReader:
         """
         i = 0
         while( i < len(doc)):
-            doc[i] = doc[i].translate(str.maketrans('.!,?*%0123456789/:°\|]}º[ª{=+-_)(&¨$#@);"><~^\n', '                                              '))
+            doc[i] = doc[i].translate(str.maketrans('.!,?“*%0123456789/:°\|]}º[ª{=+-_)(&¨$#@);"><~^\n', '                                               '))
             doc[i] = doc[i].replace(' ','')
 
             doc[i] = doc[i].lower()

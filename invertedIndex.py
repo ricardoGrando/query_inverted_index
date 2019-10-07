@@ -27,8 +27,9 @@ class InvertedIndex:
         appearances_dict = dict()
         # Dictionary with each term and the frequency it appears in the text.
         for term in terms:
-            term_frequency = appearances_dict[term].frequency if term in appearances_dict else 0
-            appearances_dict[term] = Appearance(document['id'], term_frequency + 1)
+            if term != '':
+                term_frequency = appearances_dict[term].frequency if term in appearances_dict else 0
+                appearances_dict[term] = Appearance(document['id'], term_frequency + 1)
             
         # Update the inverted index
         update_dict = { key: [appearance]
