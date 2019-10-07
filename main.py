@@ -4,6 +4,7 @@ import sys
 from HTMLReader import *
 from invertedIndex import *
 import matplotlib.pyplot as plt
+import numpy as np
 
 class main:
 
@@ -22,6 +23,7 @@ class main:
         self.calcPrecRecallF()
         self.calcAvgPrec()
         self.calcCompInterInter11()
+        self.calculateArea()
         self.plotGraphs()
 
     def createInvertedIndex(self):
@@ -157,7 +159,20 @@ class main:
         print("prec11:")
         print(self.prec11)
         print("recall11:")
-        print(self.recall11)
+        print(self.recall11)    
+
+    def calculateArea(self):
+        self.completeArea = np.trapz(self.precComplete, x=self.recallCompInter)
+        self.interpolateArea = np.trapz(self.precInter, x=self.recallCompInter)
+        self.interpolate11Area = np.trapz(self.prec11, x=self.recall11)
+
+        print("##############################################")
+        print("CompleteArea:")
+        print(self.completeArea)
+        print("InterpolateArea:")
+        print(self.interpolateArea)
+        print("Interpolate11Area:")
+        print(self.interpolate11Area)
 
     def plotGraphs(self):
         """
