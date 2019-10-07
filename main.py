@@ -139,15 +139,17 @@ class main:
             self.precInter.append(max(self.precComplete[i:]))
 
         self.prec11 = []
-        self.recall11 = []
+        self.recall11 = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
         i = int(math.ceil(len(self.retrieved)/11))
 
         j = 0
         while (j < len(self.precComplete)):
             self.prec11.append(self.precInter[j])
-            self.recall11.append(self.recallCompInter[j])
-
+            
             j+=i
+
+        while (len(self.prec11) < len(self.recall11)):
+            self.prec11.append(0.0)
 
         print("##############################################")
         print("Recallcompinter:")
