@@ -120,10 +120,12 @@ class main:
         for i in range (0, len(self.retrieved)):
             if self.retrieved[i] in self.relevant:
                 counter += 1  
-                avg += ((float(counter)/(i+1))/len(self.retrieved))
-
-            self.recallCompInter.append(float(counter)/len(self.retrieved))
+                avg += ((float(counter)/(i+1)))
+            
+            self.recallCompInter.append(float(counter)/(self.numberRelevant))
             self.precComplete.append(float(counter)/(i+1))        
+
+        avg = avg/counter
 
         print("##############################################") 
         print("AvgPrecision:")
@@ -140,16 +142,18 @@ class main:
 
         self.prec11 = []
         self.recall11 = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-        i = int(math.ceil(len(self.retrieved)/11))
+  
+        i = int(math.ceil((len(self.precComplete)/11)))
 
         j = 0
-        while (j < len(self.precComplete)):
+        while (j < len(self.precInter)):
             self.prec11.append(self.precInter[j])
             
             j+=i
 
         while (len(self.prec11) < len(self.recall11)):
             self.prec11.append(0.0)
+            print(len(self.prec11), len(self.recall11))
 
         print("##############################################")
         print("Recallcompinter:")
