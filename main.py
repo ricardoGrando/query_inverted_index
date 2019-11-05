@@ -13,18 +13,18 @@ class main:
         self.db = Documents()
         self.invertedIndex = InvertedIndex(self.db)
         self.createInvertedIndex()
-        self.calculateTfidf()
+        #self.calculateTfidf()
 
-        search_term = input("Enter term(s) to search: ")
-        
-        self.analiseQuery(search_term)   
+        #search_term = input("Enter term(s) to search: ")
+        #self.analiseQuery(search_term)   
+        #self.selectDocs() 
+        #self.calcPrecRecallF()
+        #self.calcAvgPrec()
+        #self.calcCompInterInter11()
+        #self.calculateArea()
+        #self.plotGraphs()
 
-        self.selectDocs() 
-        self.calcPrecRecallF()
-        self.calcAvgPrec()
-        self.calcCompInterInter11()
-        self.calculateArea()
-        self.plotGraphs()
+        self.calc_PR()
 
     def createInvertedIndex(self):
         """
@@ -137,19 +137,23 @@ class main:
         Calculates the intepolate precison and the interpolate precision and recall
         """
         self.precInter = []
+        self.selectedIndex = []
         for i in range(0, len(self.precComplete)):
             self.precInter.append(max(self.precComplete[i:]))
+            if self.recallCompInter[i] != self.recallCompInter[i-1]:
+                self.selectedIndex.append(i)
 
         self.prec11 = []
         self.recall11 = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
   
-        i = int(math.ceil((len(self.precComplete)/11)))
+        i = 0
+        j = 1
 
-        j = 0
-        while (j < len(self.precInter)):
-            self.prec11.append(self.precInter[j])
-            
-            j+=i
+        while (len(self.selectedIndex) > j-1):
+            self.prec11.append(self.precInter[self.selectedIndex[j-1]])
+
+            i += self.numberRelevant*0.1            
+            j = math.ceil(i)           
 
         while (len(self.prec11) < len(self.recall11)):
             self.prec11.append(0.0)
@@ -193,5 +197,16 @@ class main:
         plt.ylabel('Precision')
         plt.legend(framealpha=1, frameon=True)
         plt.show()
-            
+
+    def calc_PR(self):
+        """
+        Calculates the PR of the terms related to the docs
+        """
+
+        self.PR = np.zeros(shape=(len(self.invertedIndex.db.db)))
+        self.PR[:] = 1.0/len(self.invertedIndex.db.db)
+        self.alpha = 0.1
+        self.e = 0.000000001
+        self.invertedIndex.calc_PR(self.alpha, self.e, self.PR)
+
 m = main(sys.argv[1], sys.argv[2])

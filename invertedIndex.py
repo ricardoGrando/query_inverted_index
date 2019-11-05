@@ -1,6 +1,7 @@
 import math
 from Appearance import *
 from Documents import *
+import numpy as np
 
 ALFA = 0.5
 
@@ -152,3 +153,49 @@ class InvertedIndex:
                 sim_q[i] = tfidf_Q[i]/(math.sqrt(sum(Q_2))*D[i])
 
         return sim_q
+
+    def get_sum_pr_l(self, id):
+
+        termsList = sorted(self.getList(self.index))
+
+        counter = 0
+
+        for term in termsList:  
+            for key in self.index[term]:
+                if key.docId == id:
+                    counter += 1
+
+        return counter
+                    
+
+    def calc_PR(self, alpha, epsilon, pr_list):
+        """
+        Calculate the PR of each HTML file
+        """
+        # List of all terms sorted
+        self.termsList = sorted(self.getList(self.index))
+
+        last_pr_list = np.zeros(shape=pr_list.shape)
+
+        counter = 0
+
+        while (max(abs(last_pr_list-pr_list)) > epsilon):
+            last_pr_list = pr_list.copy()
+            for i in range(0, len(self.termsList)): 
+                sum = 0.0 
+                for key in self.index[self.termsList[i]]: 
+                    sum += pr_list[int(key.docId)]/self.get_sum_pr_l(key.docId)
+                    
+                pr_list[i] = alpha/len(pr_list) + (1-alpha)*sum
+
+                #print(max(abs(last_pr_list-pr_list)))
+
+            print(pr_list)
+
+            counter += 1  
+
+        print("##############################################")
+        print("Final PR: ")
+        print(pr_list)
+        print("Number of iterations: "+str(counter))
+              
